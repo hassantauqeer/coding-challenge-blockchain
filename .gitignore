@@ -56,5 +56,4 @@ typings/
 
 # dotenv environment variables file
 .env
-wallet-dApp/node_modules
 
