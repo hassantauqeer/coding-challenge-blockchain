@@ -28,6 +28,7 @@ class SendToken extends React.Component { // eslint-disable-line react/prefer-st
       validBalanceAddress: false,
       validSendingAddress: false,
       sendingTx: false,
+      txHash: "",
     }
   }
 
@@ -48,8 +49,9 @@ class SendToken extends React.Component { // eslint-disable-line react/prefer-st
       try {
         this.setState({sendingTx: true, txResp: ''})
         const txResp = await instance.methods.transfer(form.getFieldValue('sendingAddress'), form.getFieldValue('value').toString()).send({from: this.props.token.info.metaMaskAccount, gas: '1000000'});
-        if(txResp.blockHash) {
-          this.setState({sendingTx: false, txResp})
+
+        if(txResp.events.Transfer.returnValues._success) {
+          this.setState({sendingTx: false, txHash: txResp.transactionHash, txResp: txResp.events.Transfer.returnValues._success})
           console.log(txResp, 'loaded')
           this.props.loadToken();
         }else {
@@ -82,6 +84,7 @@ class SendToken extends React.Component { // eslint-disable-line react/prefer-st
   }
 
   render() {
+    console.log(this.state.txResp)
     const { getFieldDecorator } = this.props.form;
     return (
       <div>
@@ -118,7 +121,7 @@ class SendToken extends React.Component { // eslint-disable-line react/prefer-st
                 </Row>
             <Row style={{ width: '100%'}}>
               {this.state.sendingTx && <Icon type="loading" />}
-              {this.state.txResp.transactionHash && <p><b>Tx Hash:</b><a target="_blank" href={"https://rinkeby.etherscan.io/tx/" + this.state.txResp.transactionHash}>{this.state.txResp.transactionHash}</a></p>}
+              {this.state.txResp && <p><b>Tx Hash:</b><br/><a target="_blank" href={"https://rinkeby.etherscan.io/tx/" + this.state.txHash}>{this.state.txHash}</a></p>}
 
             </Row>
           </Form>

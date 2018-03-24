@@ -122,6 +122,8 @@ class ChangeOperations extends React.Component { // eslint-disable-line react/pr
   }
 
   render() {
+    // console.log(instance)
+
     const { getFieldDecorator } = this.props.form;
     return (
       <div>

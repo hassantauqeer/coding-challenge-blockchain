@@ -18,7 +18,6 @@ import saga from './saga';
 import CheckOperations from "../../components/CheckOperations";
 import ChangeOperations from "../../components/ChangeOperations";
 import SendToken from "../../components/SendToken";
-import CheckLockTime from "../../components/CheckLockTime";
 import { loadToken, saveTimeStamp } from "./actions";
 
 import { Row, Card, Col, Input, Button, Form, Icon, Tabs } from "antd";
