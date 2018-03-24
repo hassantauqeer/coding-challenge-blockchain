@@ -15,9 +15,10 @@ async function getTokenData() {
   const owner = await instance.methods.owner().call();
   const symbol = await instance.methods.symbol().call();
   const metaMaskAccountBalance = await instance.methods.balanceOf(accounts[0]).call();
+  const metaMaskAccountNextTxTime = await instance.methods.nextTxTime(accounts[0]).call();
 
-  console.log(symbol, accounts, totalSupply, contractAddress, name, owner)
-  return {symbol, metaMaskAccount: accounts[0], totalSupply, contractAddress, name, owner, metaMaskAccountBalance, tokenLoaded: true};
+  // console.log(symbol, accounts, totalSupply, contractAddress, name, owner)
+  return {symbol, metaMaskAccount: accounts[0], totalSupply, contractAddress, name, owner, metaMaskAccountBalance, metaMaskAccountNextTxTime, tokenLoaded: true};
 }
 
 

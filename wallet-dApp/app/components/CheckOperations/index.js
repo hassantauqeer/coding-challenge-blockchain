@@ -1,6 +1,6 @@
 /**
 *
-* CheckBalance
+* CheckOperations
 *
 */
 
@@ -13,13 +13,13 @@ import web3 from '../../../token/web3';
 import { Row, Card, Col, Input, Button, Form, Icon } from "antd";
 const FormItem = Form.Item;
 
-class CheckBalance extends React.Component { // eslint-disable-line react/prefer-stateless-function
+class CheckOperations extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
   constructor(props) {
     super(props);
     this.state = {
-      balanceLoading: false,
-      balance: '',
+      txRespLoading: false,
+      txResp: '',
       validBalanceAddress: false,
       validSendingAddress: false,
       addressValidateStatus: "",
@@ -39,14 +39,23 @@ class CheckBalance extends React.Component { // eslint-disable-line react/prefer
       else {
         this.setState({validBalanceAddress: true});
         if(this.props.componentAction == "Balance") {
-          const balance = await instance.methods.balanceOf(this.state.balanceAddress).call();
-          this.setState({balance, balanceLoading: false, validBalanceAddress: true});
+          const txResp = await instance.methods.balanceOf(this.state.balanceAddress).call();
+          this.setState({txResp, balanceLoading: false, validBalanceAddress: true});
+        }
+        else if(this.props.componentAction == "Next Tx Time") {
+          const txResp = await instance.methods.nextTxTime(this.state.balanceAddress).call();
+          console.log(txResp, 'txresp')
+          if(txResp == '1521867032' || txResp == '0' ){
+            this.setState({txResp: 'Not Locked Yet', balanceLoading: false, validBalanceAddress: true});
+          }
+          else {
+            this.setState({txResp: (new Date(parseInt(txResp * 1000))).toString(), balanceLoading: false, validBalanceAddress: true});
+          }
         }
         else {
-          const balance = await instance.methods.lockTime(this.state.balanceAddress).call();
-          this.setState({balance, balanceLoading: false, validBalanceAddress: true});
+          const txResp = await instance.methods.lockTime(this.state.balanceAddress).call();
+          this.setState({txResp, balanceLoading: false, validBalanceAddress: true});
         }
-
       }
     });
     if (this.state.validSendingAddress) {
@@ -56,7 +65,7 @@ class CheckBalance extends React.Component { // eslint-disable-line react/prefer
 
   handleCheckAddress = (rule, value, callback) => {
     // console.log(rule, value, callback)
-    this.setState({balanceAddress: value, balance: '', addressValidateStatus: 'validating'})
+    this.setState({balanceAddress: value, txResp: '', addressValidateStatus: 'validating'})
     if (value) {
       if (value && !ethereum_address.isAddress(value)) {
         // console.log('invalid')
@@ -91,7 +100,7 @@ class CheckBalance extends React.Component { // eslint-disable-line react/prefer
     const { getFieldDecorator } = this.props.form;
     return (
       <div>
-        <Card loading={this.props.loading} title={"Check " + this.props.componentAction}>
+        <Card loading={!this.props.token.info.tokenLoaded} title={"Check " + this.props.componentAction}>
           <Form style={{ display: 'flex', justifyContent: 'space-between' }} onSubmit={this.getBalance} className="login-form">
             <FormItem validateStatus={this.state.addressValidateStatus} hasFeedback help={this.state.addressHelp} style={{ width: '70%'}}>
               {getFieldDecorator('address', {
@@ -109,13 +118,15 @@ class CheckBalance extends React.Component { // eslint-disable-line react/prefer
               </Button>
             </FormItem>
           </Form>
-          {this.state.validBalanceAddress && this.state.balance && this.state.balanceAddress &&
+          {this.state.validBalanceAddress && this.state.txResp && this.state.balanceAddress &&
           <Row>
-            <Col span={3}>
-              <b>Address: </b>
+            <Col span={5}>
+              <b>{this.props.componentAction}</b>
             </Col>
-            <Col span={3} style={{color: "#52c41a"}}>
-              {this.state.balance} ST
+            <Col span={19} style={{color: "#52c41a"}}>
+              {this.state.txResp} {this.props.componentAction == "Balance" ? <span>ST</span> : this.props.componentAction == "Locktime" ? <span>Minutes</span> :
+                <p><Icon style={{color: '#FAAD14', marginRight: 10, fontSize: 17}} type="warning" />
+                <span style={{color: '#00000073'}}>You have to send a Transaction to initiate lock.</span></p>}
             </Col>
           </Row>}
         </Card>
@@ -124,8 +135,8 @@ class CheckBalance extends React.Component { // eslint-disable-line react/prefer
   }
 }
 
-CheckBalance.propTypes = {
+CheckOperations.propTypes = {
 
 };
 
-export default Form.create()(CheckBalance);
+export default Form.create()(CheckOperations);

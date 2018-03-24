@@ -26,7 +26,7 @@ class CheckLockTime extends React.Component { // eslint-disable-line react/prefe
       addressHelp: "",
     }
   }
-  getLockTime = (e) => {
+  submitForm = (e) => {
     this.setState({lockTimeLoading: true, validLockAddress: false})
     e.preventDefault();
     this.props.form.validateFields(async (err, values) => {
@@ -83,7 +83,7 @@ class CheckLockTime extends React.Component { // eslint-disable-line react/prefe
     return (
       <div>
         <Card loading={this.props.loading} title="Check Locktime">
-          <Form style={{ display: 'flex', justifyContent: 'space-between' }} onSubmit={this.getLockTime} className="login-form">
+          <Form style={{ display: 'flex', justifyContent: 'space-between' }} onSubmit={this.submitForm} className="login-form">
             <FormItem validateStatus={this.state.addressValidateStatus} hasFeedback help={this.state.addressHelp} style={{ width: '70%'}}>
               {getFieldDecorator('address', {
                 rules: [{ required: true, message: 'Address is required!' },

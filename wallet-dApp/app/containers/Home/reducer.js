@@ -6,7 +6,7 @@
 
 import { fromJS } from 'immutable';
 import {
-  SAVE_TOKEN,
+  SAVE_TOKEN, SAVE_TIMESTAMP
 } from './constants';
 
 const initialState = fromJS({
@@ -19,16 +19,18 @@ const initialState = fromJS({
     owner: '',
     metaMaskAccountBalance: '',
     metaMaskAccount: '',
-  }
-
+    metaMaskAccountNextTxTime: '',
+  },
+  timeStamp: ''
 });
 
 function homeReducer(state = initialState, action) {
   switch (action.type) {
     case SAVE_TOKEN:
-      console.log(action.data)
-      // console.log(state.setIn(['info', 'tokenLoaded']));
       return state.set('info', action.data);
+
+    case SAVE_TIMESTAMP:
+      return state.set('timeStamp', action.val);
 
     default:
       return state;

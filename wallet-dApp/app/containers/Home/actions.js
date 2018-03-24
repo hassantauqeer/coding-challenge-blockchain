@@ -5,7 +5,7 @@
  */
 
 import {
-  LOAD_TOKEN, SAVE_TOKEN
+  LOAD_TOKEN, SAVE_TOKEN, SAVE_TIMESTAMP
 } from './constants';
 
 export function loadToken() {
@@ -18,5 +18,12 @@ export function saveToken(data) {
   return {
     type: SAVE_TOKEN,
     data
+  };
+}
+
+export function saveTimeStamp(val) {
+  return {
+    type: SAVE_TIMESTAMP,
+    val
   };
 }

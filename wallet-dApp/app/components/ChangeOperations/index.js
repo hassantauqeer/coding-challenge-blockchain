@@ -14,7 +14,7 @@ import { Row, Card, Col, Input, Button, Form, Icon, Modal } from "antd";
 const FormItem = Form.Item;
 
 
-class ChangeOwner extends React.Component { // eslint-disable-line react/prefer-stateless-function
+class ChangeOperations extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
   constructor(props) {
     super(props);
@@ -44,11 +44,13 @@ class ChangeOwner extends React.Component { // eslint-disable-line react/prefer-
 
   timer () {
     // setState method is used to update the state
+    this.props.saveTimeStamp(Date.now());
+
     this.setState({ currentDate: (new Date()).toString() });
   }
 
 
-  getBalance = (e) => {
+  submitForm = (e) => {
     this.setState({ownerLoading: true, validOwnerAddress: false})
     e.preventDefault();
     this.props.form.validateFields(async (err, values) => {
@@ -59,17 +61,24 @@ class ChangeOwner extends React.Component { // eslint-disable-line react/prefer-
         this.setState({validOwnerAddress: false, ownerLoading: false, addressValidateStatus: 'error', addressHelp: 'Invalid Address!'});
       }
       else {
-        this.setState({validOwnerAddress: true});
+        this.setState({validOwnerAddress: true, txResp: ''});
         this.setState({newOwnerAddress: values.address})
         console.log(this.props.token.info.metaMaskAccount, "this.props.token.info.metaMaskAccountBalance", values, "values")
 
         if(this.props.componentAction == "Owner") {
           const txResp = await instance.methods.transferOwner(values.address).send({from: this.props.token.info.metaMaskAccount, gas: '1000000'});
+          if(txResp.blockHash) {
+            this.props.loadToken();
+          }
           console.log(txResp)
           this.setState({txResp, ownerLoading: false, validOwnerAddress: true});
         }
         else {
+          console.log(values.time, 'values.time')
           const txResp = await instance.methods.changeLockTime(values.time).send({from: this.props.token.info.metaMaskAccount, gas: '1000000'});
+          if(txResp.blockHash) {
+            this.props.loadToken();
+          }
           console.log(txResp)
           this.setState({txResp, ownerLoading: false, validOwnerAddress: true});
         }
@@ -112,28 +121,19 @@ class ChangeOwner extends React.Component { // eslint-disable-line react/prefer-
     }
   }
 
-  confirm() {
-    Modal.confirm({
-      title: 'Confirm',
-      content: 'Bla bla ...',
-      okText: '确认',
-      cancelText: '取消',
-    });
-  }
-
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
       <div>
-        <Card loading={this.props.loading} title={"Change " + this.props.componentAction}>
+        <Card loading={!this.props.token.info.tokenLoaded} title={"Change " + this.props.componentAction}>
           {(this.props.token.info.metaMaskAccount == this.props.token.info.owner || this.props.componentAction == "Locktime") && <div>
 
-            <Form style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column' }} onSubmit={this.props.componentAction == "Owner" ? this.getBalance : this.confirm.bind(this)} className="login-form">
+            <Form style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column' }} onSubmit={this.submitForm} className="login-form">
 
               {
                 this.props.componentAction == "Locktime" &&
                 <Row>
-                  <p><b>Current Date:</b> {this.state.currentDate}</p>
+                  <p><b>Current DateTime:</b> {this.state.currentDate}</p>
                 </Row>
               }
 
@@ -177,28 +177,27 @@ class ChangeOwner extends React.Component { // eslint-disable-line react/prefer-
 
             {this.state.validOwnerAddress && this.state.txResp.blockHash && this.state.newOwnerAddress &&
             <Row>
-              <Col span={3}>
-                <b>Address: </b>
-              </Col>
-              <Col span={3} style={{color: "#52c41a"}}>
-                {this.state.newOwnerAddress}
+              <Col>
+                <b>New Owner Address: </b>
+                <p style={{color: "#1890ff"}}>
+                  {this.state.newOwnerAddress}
+                </p>
               </Col>
             </Row>}
           </div>}
 
 
-          {
-            this.props.componentAction == "Locktime" &&
-              <p>
-                <Icon style={{color: '#FAAD14', marginRight: 10, fontSize: 17}} type="warning" />
-                {(this.props.token.info.metaMaskAccount != this.props.token.info.owner && this.props.componentAction == "Owner") &&
-                <span>Only an Onwer can change Owner Address. You should log through Owner address.</span>}
+          {(this.props.token.info.metaMaskAccount != this.props.token.info.owner && this.props.componentAction == "Owner") &&
+            <p>
+              <Icon style={{color: '#FAAD14', marginRight: 10, fontSize: 17}} type="warning" />
+              <span>Only an Onwer can change Owner Address. You should log through Owner address.</span>
+            </p>}
 
-                {(this.props.componentAction == "Locktime") &&
-                <span>This will change the Lock time of Current Meta Mask Account.</span>}
-
-              </p>
-          }
+          {(this.props.componentAction == "Locktime") &&
+          <p>
+            <Icon style={{color: '#FAAD14', marginRight: 10, fontSize: 17}} type="warning" />
+            <span>This will change the Lock time of Current Meta Mask Account.</span>
+          </p>}
         </Card>
 
       </div>
@@ -206,8 +205,8 @@ class ChangeOwner extends React.Component { // eslint-disable-line react/prefer-
   }
 }
 
-ChangeOwner.propTypes = {
+ChangeOperations.propTypes = {
 
 };
 
-export default Form.create()(ChangeOwner);
+export default Form.create()(ChangeOperations);
