@@ -6,15 +6,30 @@
 
 import { fromJS } from 'immutable';
 import {
-  DEFAULT_ACTION,
+  SAVE_TOKEN,
 } from './constants';
 
-const initialState = fromJS({});
+const initialState = fromJS({
+  info: {
+    tokenLoaded: false,
+    name: '',
+    symbol: '',
+    totalSupply: '',
+    contractAddress: '',
+    owner: '',
+    metaMaskAccountBalance: '',
+    metaMaskAccount: '',
+  }
+
+});
 
 function homeReducer(state = initialState, action) {
   switch (action.type) {
-    case DEFAULT_ACTION:
-      return state;
+    case SAVE_TOKEN:
+      console.log(action.data)
+      // console.log(state.setIn(['info', 'tokenLoaded']));
+      return state.set('info', action.data);
+
     default:
       return state;
   }

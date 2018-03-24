@@ -12,30 +12,90 @@ import { compose } from 'redux';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import makeSelectHome from './selectors';
+import makeSelectToken from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import CheckBalance from "../../components/CheckBalance";
+import ChangeOwner from "../../components/ChangeOwner";
+import SendToken from "../../components/SendToken";
+import CheckLockTime from "../../components/CheckLockTime";
+import { loadToken } from "./actions";
+
+import { Row, Card, Col, Input, Button, Form, Icon, Tabs } from "antd";
+const FormItem = Form.Item;
+const { TabPane } = Tabs;
+
 
 export class Home extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  constructor(props) {
+    super(props);
+  }
+  componentDidMount(){
+    this.props.loadToken();
+  }
+
   render() {
+
+    console.log(this.props.token)
     return (
-      <div>
+      <div className="app">
+        <div className="container">
+          <Card loading={!this.props.token.info.tokenLoaded} title="ERC 20 Wallet" style={{ width: '100%', textAlign: 'center' }}>
+            <Row>
+              <Col className="custom-column" span={6} ><b>Name: </b>{this.props.token.info.name}</Col>
+              <Col className="custom-column"  span={6} ><b>Symbol: </b>{this.props.token.info.symbol}</Col>
+              <Col className="custom-column"  span={6} ><b>Total Supply: </b>{this.props.token.info.totalSupply}</Col>
+            </Row>
+            <Row style={{ margin: '15px auto'}}>
+              <Col className="custom-column"  span={12}><b>Contract Address: </b>{this.props.token.info.contractAddress}</Col>
+              <Col className="custom-column"  span={12}><b>Owner Address: </b>{this.props.token.info.owner}</Col>
+            </Row>
+            <Row>
+              <Col  className="custom-column" span={12}><b>Current MetaMask Account: </b>{this.props.token.info.metaMaskAccount}</Col>
+              <Col  className="custom-column" span={4}><b>Account Balance: </b> {this.props.token.info.metaMaskAccountBalance} ST</Col>
+            </Row>
+          </Card>
+
+          <Tabs defaultActiveKey="1" size="default" style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <TabPane tab="Account Info" key="1">
+              <Row style={{margin: '20px auto'}}>
+                <Col span={11}>
+                  <CheckBalance componentAction="Balance" {...this.props}/>
+                </Col>
+                <Col offset={2} span={11}>
+                  <ChangeOwner componentAction="Owner" {...this.props}/>
+                </Col>
+              </Row>
+              <Row style={{margin: '20px auto'}}>
+                <Col span={11}>
+                  <SendToken {...this.props}/>
+                </Col>
+                <Col offset={2} span={11}>
+                  <CheckBalance componentAction="Locktime" {...this.props}/>
+                </Col>
+              </Row>
+              <Row style={{margin: '20px auto'}}>
+                <Col span={11}>
+                  <ChangeOwner componentAction="Locktime" {...this.props}/>
+                </Col>
+              </Row>
+            </TabPane>
+            <TabPane tab="Lock Account" key="2">
+            </TabPane>
+          </Tabs>
+        </div>
       </div>
     );
   }
 }
 
-Home.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-};
-
 const mapStateToProps = createStructuredSelector({
-  home: makeSelectHome(),
+  token: makeSelectToken(),
 });
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch,
+    loadToken: () => dispatch(loadToken())
   };
 }
 

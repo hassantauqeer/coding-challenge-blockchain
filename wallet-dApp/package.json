@@ -203,10 +203,13 @@
     "testRegex": "tests/.*\\.test\\.js$"
   },
   "dependencies": {
+    "animate.css": "^3.6.1",
+    "antd": "^3.3.1",
     "babel-polyfill": "6.23.0",
     "chalk": "1.1.3",
     "compression": "1.6.2",
     "cross-env": "5.0.0",
+    "ethereum-address": "^0.0.4",
     "express": "4.15.3",
     "fontfaceobserver": "2.0.9",
     "ganache-cli": "^6.1.0",

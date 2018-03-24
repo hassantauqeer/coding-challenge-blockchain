@@ -14,12 +14,12 @@ const selectHomeDomain = (state) => state.get('home');
  * Default selector used by Home
  */
 
-const makeSelectHome = () => createSelector(
+const makeSelectToken = () => createSelector(
   selectHomeDomain,
   (substate) => substate.toJS()
 );
 
-export default makeSelectHome;
+export default makeSelectToken;
 export {
   selectHomeDomain,
 };

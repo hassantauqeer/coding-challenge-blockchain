@@ -5,11 +5,18 @@
  */
 
 import {
-  DEFAULT_ACTION,
+  LOAD_TOKEN, SAVE_TOKEN
 } from './constants';
 
-export function defaultAction() {
+export function loadToken() {
   return {
-    type: DEFAULT_ACTION,
+    type: LOAD_TOKEN,
+  };
+}
+
+export function saveToken(data) {
+  return {
+    type: SAVE_TOKEN,
+    data
   };
 }
