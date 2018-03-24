@@ -84,12 +84,11 @@ class SendToken extends React.Component { // eslint-disable-line react/prefer-st
   }
 
   render() {
-    console.log(this.state.txResp)
     const { getFieldDecorator } = this.props.form;
     return (
       <div>
         <Card  loading={!this.props.token.info.tokenLoaded} title="Send Tokens">
-          { (parseInt(this.props.token.info.metaMaskAccountNextTxTime)*1000) < this.props.token.timeStamp  &&
+          { (parseInt(this.props.token.info.metaMaskAccountNextTxTime)*1000) < this.props.token.timeStamp  && (this.props.token.info.metaMaskAccount != undefined) &&
           <Form style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column', alignItems: 'center' }} onSubmit={this.sendTx} className="login-form">
                 <FormItem style={{ width: '100%'}}>
                   {getFieldDecorator('sendingAddress', {
@@ -132,6 +131,11 @@ class SendToken extends React.Component { // eslint-disable-line react/prefer-st
               <span>Your account is locked till <b>{(new Date(parseInt(this.props.token.info.metaMaskAccountNextTxTime) * 1000)).toString()}</b></span>
             </Row>
           }
+          {(this.props.token.info.metaMaskAccount == undefined) &&
+          <p>
+            <Icon style={{color: '#f5222d', marginRight: 10, fontSize: 17}} type="close-circle-o" />
+            <span>Connect MetaMask first.</span>
+          </p>}
         </Card>
       </div>
     );

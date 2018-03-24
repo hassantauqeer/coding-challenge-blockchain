@@ -127,10 +127,11 @@ class ChangeOperations extends React.Component { // eslint-disable-line react/pr
     const { getFieldDecorator } = this.props.form;
     return (
       <div>
-        <Card loading={!this.props.token.info.tokenLoaded} title={"Change " + this.props.componentAction}>
-          {(this.props.token.info.metaMaskAccount == this.props.token.info.owner || this.props.componentAction == "Locktime") && <div>
+        <Card loading={!this.props.token.info.tokenLoaded && this.props.token.info.metaMaskAccount} title={"Change " + this.props.componentAction}>
+          {(this.props.token.info.metaMaskAccount == this.props.token.info.owner || this.props.componentAction == "Locktime")  && (this.props.token.info.metaMaskAccount != undefined) && <div>
 
-            <Form style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column' }} onSubmit={this.submitForm} className="login-form">
+            <Form style={{display: 'flex', justifyContent: 'space-between', flexDirection: 'column'}}
+                  onSubmit={this.submitForm} className="login-form">
 
               {
                 this.props.componentAction == "Locktime" &&
@@ -141,35 +142,37 @@ class ChangeOperations extends React.Component { // eslint-disable-line react/pr
 
 
               {this.props.componentAction == "Owner" &&
-                <Row style={{width: '100%'}}>
-                <Col span={24}  style={{width: '100%'}}>
+              <Row style={{width: '100%'}}>
+                <Col span={24} style={{width: '100%'}}>
                   <FormItem validateStatus={this.state.addressValidateStatus} hasFeedback help={this.state.addressHelp}>
                     {getFieldDecorator('address', {
-                      rules: [{ required: true, message: 'Address is required!' },
+                      rules: [{required: true, message: 'Address is required!'},
                         {
                           validator: this.handleCheckAddress
                         }],
                     })(
-                      <Input onBlur={this.handleAddressBlur} placeholder="Enter New Owner's Address" />
+                      <Input onBlur={this.handleAddressBlur} placeholder="Enter New Owner's Address"/>
                     )}
                   </FormItem>
                 </Col>
               </Row>
               }
 
-              <Row style={{ display: 'flex', justifyContent: 'flex-end', width: '100%'}}>
+              <Row style={{display: 'flex', justifyContent: 'flex-end', width: '100%'}}>
                 <Col span={10} pull={8}>
-                  {this.props.componentAction == "Locktime" && <FormItem validateStatus={this.state.addressValidateStatus} hasFeedback help={this.state.addressHelp}>
+                  {this.props.componentAction == "Locktime" &&
+                  <FormItem validateStatus={this.state.addressValidateStatus} hasFeedback help={this.state.addressHelp}>
                     {getFieldDecorator('time', {
-                      rules: [{ required: true, message: 'Time is required!' }],
+                      rules: [{required: true, message: 'Time is required!'}],
                     })(
-                      <Input min="1" type="number" placeholder="Enter New Lock Time" />
+                      <Input min="1" type="number" placeholder="Enter New Lock Time"/>
                     )}
                   </FormItem>}
                 </Col>
                 <Col span={6} pull={1}>
                   <FormItem>
-                    <Button loading={this.state.ownerLoading}  type="primary" htmlType="submit" className="login-form-button">
+                    <Button loading={this.state.ownerLoading} type="primary" htmlType="submit"
+                            className="login-form-button">
                       Change {this.props.componentAction}
                     </Button>
                   </FormItem>
@@ -195,10 +198,15 @@ class ChangeOperations extends React.Component { // eslint-disable-line react/pr
               <span>Only an Onwer can change Owner Address. You should log through Owner address.</span>
             </p>}
 
-          {(this.props.componentAction == "Locktime") &&
+          {(this.props.componentAction == "Locktime" && this.props.token.info.metaMaskAccount != undefined) &&
           <p>
             <Icon style={{color: '#FAAD14', marginRight: 10, fontSize: 17}} type="warning" />
             <span>This will change the Lock time of Current Meta Mask Account.</span>
+          </p>}
+          {(this.props.token.info.metaMaskAccount == undefined) &&
+          <p>
+            <Icon style={{color: '#f5222d', marginRight: 10, fontSize: 17}} type="close-circle-o" />
+            <span>Connect MetaMask first.</span>
           </p>}
         </Card>
 

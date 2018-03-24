@@ -48,7 +48,7 @@ export class Home extends React.Component { // eslint-disable-line react/prefer-
               <Col className="custom-column"  span={12}><b>Owner Address: </b>{this.props.token.info.owner}</Col>
             </Row>
             <Row>
-              <Col  className="custom-column" span={12}><b>Current MetaMask Account: </b>{this.props.token.info.metaMaskAccount}</Col>
+              <Col  className="custom-column" span={12}><b>Current MetaMask Account: </b>{this.props.token.info.metaMaskAccount == undefined ? <span style={{color: '#f5222d'}}>Connect MetaMask</span> : this.props.token.info.metaMaskAccount}</Col>
               <Col  className="custom-column" span={4}><b>Account Balance: </b> {this.props.token.info.metaMaskAccountBalance} ST</Col>
             </Row>
           </Card>

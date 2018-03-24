@@ -18,7 +18,7 @@ const initialState = fromJS({
     contractAddress: '',
     owner: '',
     metaMaskAccountBalance: '',
-    metaMaskAccount: '',
+    metaMaskAccount: undefined,
     metaMaskAccountNextTxTime: '',
   },
   timeStamp: ''
