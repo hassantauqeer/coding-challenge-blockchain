@@ -49,21 +49,21 @@ contract SavingToken is ERC20Modified {
       balances[_to] = balances[_to].add(_value);
       balances[msg.sender] = accountBalance.sub(_value);
       nextTxTime[msg.sender] = now + (lockTime[msg.sender] * 60);
-      // Transfer(msg.sender, _to, _value);
+      Transfer(msg.sender, _to, _value, success=true);
       return true;
     }
-    return false;
+    Transfer(msg.sender, _to, _value, success=false);
+  return false;
   }
 
   function changeLockTime(uint8 newLockTime) public {
     lockTime[msg.sender] = newLockTime;
-    // ChangeLockTime(msg.sender, newLockTime);
   }
 
   function approve(address _spender, uint256 _value) public returns (bool success) {
     require(msg.sender != _spender);
     allowedAddress[msg.sender][_spender] = _value;
-    // Approval(msg.sender, _spender, _value);
+     Approval(msg.sender, _spender, _value);
     return true;
   }
 
@@ -77,7 +77,7 @@ contract SavingToken is ERC20Modified {
       allowedAddress[_from][msg.sender] -= _value;
     }
 
-    // Transfer(_from, _to, _value);
+     TransferFrom(_from, _to, _value);
     return true;
   }
 
