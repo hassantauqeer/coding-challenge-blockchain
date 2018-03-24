@@ -105,6 +105,8 @@ yarn run test
 *  Rest are easy to understand.
 
 
+👤Any Recommendations, EIPs, bug Fixes or Issues are highly welcomed.😇
+
 
 # Brickblock Coding Challenge - Ethereum
 
