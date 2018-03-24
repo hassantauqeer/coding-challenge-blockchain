@@ -3,7 +3,7 @@ import SavingToken from './build/SavingToken.json';
 
 const instance = new web3.eth.Contract(
   JSON.parse(SavingToken.interface),
-  '0xd26604e4EDB2307EA36A3f7BE95e3f213aB15004'
+  '0x91bbb106f68f4f87dE8789E9B0423A6CCb1E68A6'
 );
 
 export default instance;
