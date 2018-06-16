@@ -1,4 +1,5 @@
 # ERC20 Token Wallet
+![Dapp Mockup](app/images/Dapp-Mockup-.png?raw=true "Title")
 
 - [Installation](#installation)
 - [Project Structure](#project-structure)
